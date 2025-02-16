@@ -23,7 +23,7 @@ class MusicAudio {
 
     Music getRMusic() const { return music; }
 
-    bool getLoop() const { return loop; }
+    bool doesLoop() const { return loop; }
     void setLoop(bool loop_) { loop = loop_; }
 
     void update();
@@ -54,7 +54,7 @@ class SoundAudio {
 
     Sound getRSound() const { return sound; }
 
-    bool getLoop() const { return loop; }
+    bool doesLoop() const { return loop; }
     void setLoop(bool loop_) { loop = loop_; }
 
     void update();

@@ -1,3 +1,6 @@
+All of this is in `iris/iris_graphics.h`
+
+
 # Understanding shapes
 
 All shapes inherit from a base class called `Obj2D`
@@ -118,3 +121,4 @@ Obj2D has three static collision methods:
 - `bool checkIntersectionCircles(Vec3 a, Vec3 b);`: Checks collision between circles
 
 > Tip: For sprites with custom cutouts (Like spritesheets) use `getScaledRect()` to get the scaled Obj2D cutout box.
+

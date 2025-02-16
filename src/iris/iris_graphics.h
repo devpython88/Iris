@@ -396,12 +396,12 @@ public:
     // advances column by one and loops back if loop is enabled
     void advance(){ column = column + 1 < columns ? column + 1 : (loop ? 0 : column); }
 
-    bool getPaused() const { return paused; }
+    bool isPaused() const { return paused; }
     void setPaused(bool paused_) { paused = paused_; }
 
     void pause() { setPaused(true); }
     void resume() { setPaused(false); }
-    void togglePause() { setPaused(!getPaused()); }
+    void togglePause() { setPaused(!isPaused()); }
 
     // Updates the frame.
     void updateAnimation();
