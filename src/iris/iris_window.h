@@ -66,9 +66,18 @@ class Game {
         if (config.getDecorationless()) SetConfigFlags(FLAG_WINDOW_UNDECORATED);
         if (config.getVsync()) SetConfigFlags(FLAG_VSYNC_HINT);
 
+        SetTraceLogLevel(LOG_NONE);
+
         InitWindow(width, height, title.c_str());
         InitAudioDevice();
         SetTargetFPS(fps);
+
+        LogService::info("Created window.",
+            "\n  :: Size: ", width, "x", height,
+            "\n  :: Title: ", title);
+        
+        LogService::info("Set FPS to ", fps, ".");
+        LogService::info("Created audio device");
 
         if (config.getFullscreen()) ToggleFullscreen();
         if (config.getMaximized()) MaximizeWindow();
@@ -99,8 +108,15 @@ class Game {
         }
 
         if (unloadFunc) unloadFunc();
+
+        LogService::info("Unloading...");
+        
+        TextureService::unloadEverything();
+
         CloseAudioDevice();
+        LogService::info("Closed audio device.");
         CloseWindow();
+        LogService::info("Closed window.");
     }
 
 

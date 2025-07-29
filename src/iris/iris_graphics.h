@@ -1,16 +1,22 @@
 #pragma once
 
 #include "iris_math.h"
+#include "iris_logging.h"
 #include <inttypes.h>
+#include <map>
 #include <vector>
 #include <string>
 
+enum class TextureResult {
+    LoadFailed,
+    LoadSuccess
+};
 
 
 class RGBAColor {
     public:
     uint8_t r, g, b, a;
-
+    
     RGBAColor(): r(0), g(0), b(0), a(0){}
     RGBAColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a): r(r), g(g), b(b), a(a){}
     RGBAColor(Color rCol): r(rCol.r), g(rCol.g), b(rCol.b), a(rCol.a){}
@@ -164,6 +170,8 @@ class Rect2D : public Obj2D {
 
 // renderer
 
+class TextureService;
+
 class GraphicsRenderer {
     public:
 
@@ -175,4 +183,26 @@ class GraphicsRenderer {
     static void drawLine(Vec2 start, Vec2 end, int thickness, RGBAColor color);
     static void drawPoint(Vec2 pos, RGBAColor color);
     static void drawText(float x, float y, std::string text, int size, RGBAColor color);
+    static void drawTexture(float x, float y, std::string id, Vec2 scale = Vec2(1.0f, 1.0f));
+};
+
+
+
+
+
+
+class TextureService {
+    private:
+    static std::map<std::string, Texture> textures;
+
+    public:
+
+    static TextureResult loadTexture(std::string path, std::string id);
+    static bool textureExists(std::string id);
+    static void unloadTexture(std::string id);
+    static bool isLoaded(std::string id);
+    static Texture* getRTexture(std::string id);
+    static void unloadEverything();
+     
+    static std::map<std::string, Texture> getTextures() { return textures; }
 };

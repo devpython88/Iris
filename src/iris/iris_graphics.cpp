@@ -83,6 +83,26 @@ void GraphicsRenderer::drawText(float x, float y, std::string text, int size, RG
     DrawText(text.c_str(), x, y, size, color);
 }
 
+void GraphicsRenderer::drawTexture(float x, float y, std::string id, Vec2 scale)
+{
+    if (!TextureService::textureExists(id)){
+        DrawRectangle(x, y, 20, 20, RED);
+        return;
+    }
+
+    Texture tex = *TextureService::getRTexture(id);
+
+    float width = static_cast<float>(tex.width);
+    float height = static_cast<float>(tex.height);
+
+    DrawTexturePro(
+        tex,
+        Rectangle{0, 0, width, height},
+        Rectangle{x, y, width * scale.x, height * scale.y},
+        Vector2{0, 0}, 0, WHITE
+    );
+}
+
 void Obj2D::update()
 {
     x += velocity.x;
@@ -109,4 +129,54 @@ void Obj2D::step(float amount)
 
     x += dx;
     y += dy;
+}
+
+
+std::map<std::string, Texture> TextureService::textures = std::map<std::string, Texture>();
+
+
+TextureResult TextureService::loadTexture(std::string path, std::string id)
+{
+    Texture tex = LoadTexture(path.c_str());
+
+    if (tex.id == 0){
+        LogService::error("Couldn't load texture `", path, "`.");
+        return TextureResult::LoadFailed;
+    }
+
+    textures[id] = tex;
+    LogService::info("Loaded texture `", path, "` with identifier `", id, "`.");
+    return TextureResult::LoadSuccess;
+}
+
+bool TextureService::textureExists(std::string id)
+{
+    return textures.find(id) != textures.end();
+}
+
+void TextureService::unloadTexture(std::string id)
+{
+    if (!isLoaded(id)) return;
+
+    UnloadTexture(textures[id]);
+}
+
+bool TextureService::isLoaded(std::string id)
+{
+    return textureExists(id) && textures[id].id != 0;
+}
+
+Texture* TextureService::getRTexture(std::string id)
+{
+    return &textures[id];
+}
+
+void TextureService::unloadEverything()
+{
+    for (auto pair : textures){
+        if (pair.second.id != 0) {
+            UnloadTexture(pair.second);
+            LogService::info("Unloaded texture with identifier `", pair.first, "`.");
+        }
+    }
 }
