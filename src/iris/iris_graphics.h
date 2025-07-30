@@ -89,16 +89,22 @@ class Obj2D {
     float rotation;
     Vec2 origin;
 
+    bool canCollide;
+    bool visible;
+
     public:
 
     Obj2D() = default;
     Obj2D(float x, float y, float width, float height):
-    x(x), y(y), width(width), height(height), velocity(0, 0), rotation(0), origin(0, 0){}
+    x(x), y(y), width(width), height(height), velocity(0, 0), rotation(0), origin(0, 0),
+    visible(true), canCollide(true){}
 
-    float getX() const { return x; }
+    float getX() const { return x - origin.x; }
+    float getRawX() const { return x; }
     void setX(float x_) { x = x_; }
 
-    float getY() const { return y; }
+    float getY() const { return y - origin.y; }
+    float getRawY() const { return y; }
     void setY(float y_) { y = y_; }
 
     float getWidth() const { return width; }
@@ -109,6 +115,9 @@ class Obj2D {
 
     Vec2 getSize() const { return Vec2(width, height); }
     Vec2 getPosition() const { return Vec2(x, y); }
+
+    void setSize(float w, float h) { width = w; height = h; }
+    void setPosition(float x_, float y_){ x = x_; y = y_; }
 
     // moves
     void move(float dx, float dy) { addVelocity(dx, dy); }
@@ -143,6 +152,24 @@ class Obj2D {
 
     // Steps forward relative to the rotation
     void step(float amount);
+
+    // Checks intersection between two bounding boxes
+    static bool checkIntersection(Obj2D a, Obj2D b);
+
+    // Checks intersection between a bouding box and a circle
+    static bool checkIntersectionCircle(Obj2D a, Vec2 center, float radius);
+
+    // Checks intersection between circles
+    static bool checkIntersectionCircles(Vec3 a, Vec3 b);
+
+    // Returns a raylib rectangle, mainly used in library
+    Rectangle raylibRec(){ return Rectangle{x, y, width, height}; }
+
+    bool getCanCollide() const { return canCollide; }
+    void setCanCollide(bool canCollide_) { canCollide = canCollide_; }
+
+    bool getVisible() const { return visible; }
+    void setVisible(bool visible_) { visible = visible_; }
 };
 
 
@@ -161,7 +188,6 @@ class Rect2D : public Obj2D {
     RGBAColor getColor() const { return color; }
     void setColor(const RGBAColor &color_) { color = color_; }
 
-    Rectangle raylibRec(){ return Rectangle{x, y, width, height}; }
 };
 
 
@@ -171,6 +197,7 @@ class Rect2D : public Obj2D {
 // renderer
 
 class TextureService;
+class Sprite2D;
 
 class GraphicsRenderer {
     public:
@@ -184,6 +211,7 @@ class GraphicsRenderer {
     static void drawPoint(Vec2 pos, RGBAColor color);
     static void drawText(float x, float y, std::string text, int size, RGBAColor color);
     static void drawTexture(float x, float y, std::string id, Vec2 scale = Vec2(1.0f, 1.0f));
+    static void drawSprite(Sprite2D sprite);
 };
 
 
@@ -205,4 +233,65 @@ class TextureService {
     static void unloadEverything();
      
     static std::map<std::string, Texture> getTextures() { return textures; }
+};
+
+
+
+
+
+
+
+
+class Sprite2D : public Obj2D {
+    private:
+    Texture* tex;
+
+    Vec2 scale;
+    bool flipX;
+    bool flipY;
+
+    Obj2D cutout;
+
+    public:
+
+    Sprite2D(): Obj2D(){}
+    Sprite2D(std::string id, float x, float y): Obj2D(x, y, 0, 0), scale(1.0f, 1.0f), flipX(false), flipY(false){
+        if (!TextureService::textureExists(id)){
+            LogService::error("Sprite attempted to load nonexistent texture by identifier: ", id, ".");
+            return;
+        }
+
+        tex = TextureService::getRTexture(id);
+        setSize(static_cast<float>(tex->width), static_cast<float>(tex->height));
+        setCutout(0, 0, static_cast<float>(tex->width), static_cast<float>(tex->height));
+    }
+
+    Vec2 getScale() const { return scale; }
+    void setScale(const Vec2 &scale_) { scale = scale_; }
+    void setScale(float x, float y) { scale = Vec2(x, y); }
+
+    Vec2 getScaledSize() const { return getSize() * getScale(); }
+
+    bool getFlipX() const { return flipX; }
+    void setFlipX(bool flipX_) { flipX = flipX_; }
+
+    bool getFlipY() const { return flipY; }
+    void setFlipY(bool flipY_) { flipY = flipY_; }
+
+    Boolean2 getFlip() const { return Boolean2(flipX, flipY); }
+    void setFlip(bool x, bool y) { flipX = x; flipY = y; }
+
+    // Returns rectangle, Must be used when checking collision with scaled sprites as it provides a scaled rect
+    Obj2D getRect() const { return Obj2D(x, y,
+        width * scale.x,
+        height * scale.y); }
+
+    Texture* getTex() const { return tex; }
+
+    Obj2D getCutout() const { return Obj2D(cutout.getRawX(), cutout.getRawY(),
+        cutout.getWidth() * (flipX ? -1.0f : 1.0f),
+        cutout.getHeight() * (flipY ? -1.0f : 1.0f)); }
+    
+    void setCutout(const Obj2D &cutout_) { cutout = cutout_; }
+    void setCutout(float x, float y, float w, float h) { setCutout(Obj2D(x, y, w, h)); }
 };

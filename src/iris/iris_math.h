@@ -154,3 +154,14 @@ public:
         return Vec4(x / scalar, y / scalar, z / scalar, w / scalar);
     }
 };
+
+
+
+
+class Boolean2 {
+    public:
+    bool a, b;
+
+    Boolean2() = default;
+    Boolean2(bool a, bool b): a(a), b(b){}
+};

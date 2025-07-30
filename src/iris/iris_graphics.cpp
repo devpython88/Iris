@@ -45,6 +45,8 @@ RGBAColor Colors::PastleAutumnLeaves = RGBAColor(255, 160, 122, 200);
 
 void GraphicsRenderer::drawRectangle(Rect2D rect)
 {
+    if (!rect.getVisible()) return;
+    
     DrawRectanglePro(rect.raylibRec(), rect.getOrigin(), rect.getRotation(), rect.getColor());
 }
 
@@ -103,6 +105,16 @@ void GraphicsRenderer::drawTexture(float x, float y, std::string id, Vec2 scale)
     );
 }
 
+void GraphicsRenderer::drawSprite(Sprite2D sprite)
+{
+    if (!sprite.getVisible()) return;
+
+    DrawTexturePro(
+        *sprite.getTex(), sprite.getCutout().raylibRec(), sprite.getRect().raylibRec(),
+        sprite.getOrigin(), sprite.getRotation(), WHITE
+    );
+}
+
 void Obj2D::update()
 {
     x += velocity.x;
@@ -131,6 +143,26 @@ void Obj2D::step(float amount)
     y += dy;
 }
 
+bool Obj2D::checkIntersection(Obj2D a, Obj2D b)
+{
+    if (!a.getCanCollide() || !b.getCanCollide()) return false;
+    
+    Rectangle rA = { a.getX(), a.getY(), a.getWidth(), a.getHeight() };
+    Rectangle rB = { b.getX(), b.getY(), b.getWidth(), b.getHeight() };
+    return CheckCollisionRecs(rA, rB);
+}
+
+bool Obj2D::checkIntersectionCircle(Obj2D a, Vec2 center, float radius)
+{
+    if (!a.getCanCollide()) return false;
+    Rectangle rA = { a.getX(), a.getY(), a.getWidth(), a.getHeight() };
+    return CheckCollisionCircleRec(center, radius, rA);
+}
+
+bool Obj2D::checkIntersectionCircles(Vec3 a, Vec3 b)
+{
+    return CheckCollisionCircles(Vector2{a.x, a.y}, a.z, Vector2{b.x, b.y}, b.z);
+}
 
 std::map<std::string, Texture> TextureService::textures = std::map<std::string, Texture>();
 
