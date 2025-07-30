@@ -10,7 +10,6 @@ typedef std::function<void(void)> DrawFunc;
 typedef std::function<void(void)> UnloadFunc;
 
 
-
 class PreinitConfig {
     private:
     bool vsync;
