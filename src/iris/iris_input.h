@@ -1,6 +1,9 @@
 #pragma once
 #include <raylib.h>
 #include "iris_math.h"
+#include "iris_window.h"
+
+class ViewCamera;
 
 class Keyboard {
     public:
@@ -147,6 +150,7 @@ class Mouse {
     static const int SideButton = MOUSE_BUTTON_SIDE;
 
     static Vec2 getPosition();
+    static Vec2 getWorldPosition(ViewCamera camera);
     static Vec2 getScrollVec();
     static float getScroll();
 

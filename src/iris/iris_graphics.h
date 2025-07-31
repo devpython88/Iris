@@ -261,6 +261,12 @@ class Sprite2D : public Obj2D {
         }
 
         tex = TextureService::getRTexture(id);
+
+        if (tex == nullptr){
+            LogService::error("Sprite attempted to load nonexistent texture by identifier: ", id, ".");
+            return;
+        }
+
         setSize(static_cast<float>(tex->width), static_cast<float>(tex->height));
         setCutout(0, 0, static_cast<float>(tex->width), static_cast<float>(tex->height));
     }
@@ -312,7 +318,7 @@ class AnimatedSprite2D : public Sprite2D {
 public:
 
     AnimatedSprite2D(): Sprite2D(){}
-    
+
     AnimatedSprite2D(std::string id, Vec2 pos, Vec2 frameSize, int fps = 10): Sprite2D(id, pos.x, pos.y),
     frameSize(frameSize), row(0), column(0), fps(fps),
     loop(false), paused(false), columns(0), rows(0), lastFtime(1.0f / fps){

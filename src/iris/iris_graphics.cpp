@@ -1,6 +1,5 @@
 #include "iris_graphics.h"
 
-
 RGBAColor Colors::Red = RGBAColor(255, 0, 0, 255);
 RGBAColor Colors::Yellow = RGBAColor(255, 255, 0, 255);
 RGBAColor Colors::Green = RGBAColor(0, 255, 0, 255);
@@ -200,6 +199,7 @@ bool TextureService::isLoaded(std::string id)
 
 Texture* TextureService::getRTexture(std::string id)
 {
+    if (!textureExists(id)) return nullptr;
     return &textures[id];
 }
 

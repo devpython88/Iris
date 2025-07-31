@@ -4,6 +4,7 @@
 
 AnimatedSprite2D sprite;
 Game game;
+ViewCamera camera;
 
 void init(){
     TextureService::loadTexture("build/apple.png", "apple");
@@ -12,16 +13,23 @@ void init(){
     sprite.setLoop(true);
     sprite.setOrigin(sprite.getScaledSize() * ORIGIN_CENTER);
     sprite.setFlip(false, true);
+    
 }
 
 void draw(){
+    camera.enterCameraMode();
     GraphicsRenderer::drawSprite(sprite);
+    camera.exitCameraMode();
 }
 
 void update(float dt){
-    sprite.lookAt(Mouse::getPosition());
+    sprite.lookAt(Mouse::getWorldPosition(camera));
     sprite.step(100 * dt);
     sprite.updateAnimation();
+
+    if (Keyboard::isKeyHeld(Keyboard::KeyL)){
+        camera.setTarget(camera.getTarget() + Vec2(10, 0));
+    }
 }
 
 void unload(){

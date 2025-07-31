@@ -24,6 +24,11 @@ Vec2 Mouse::getPosition(){
     return Vec2(GetMouseX(), GetMouseY());
 }
 
+Vec2 Mouse::getWorldPosition(ViewCamera camera)
+{
+    return getPosition() + camera.getTarget();
+}
+
 Vec2 Mouse::getScrollVec(){
     return Vec2(GetMouseWheelMoveV().x, GetMouseWheelMoveV().y);
 }

@@ -165,3 +165,11 @@ class Boolean2 {
     Boolean2() = default;
     Boolean2(bool a, bool b): a(a), b(b){}
 };
+
+
+class MathUtils {
+    public:
+
+    static bool isZero(float v);
+    static float getDistance(Vec2 a, Vec2 b);
+};
