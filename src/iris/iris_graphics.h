@@ -245,7 +245,6 @@ class TextureService {
 class Sprite2D : public Obj2D {
     private:
     Texture* tex;
-
     Vec2 scale;
     bool flipX;
     bool flipY;
@@ -294,4 +293,67 @@ class Sprite2D : public Obj2D {
     
     void setCutout(const Obj2D &cutout_) { cutout = cutout_; }
     void setCutout(float x, float y, float w, float h) { setCutout(Obj2D(x, y, w, h)); }
+};
+
+
+
+class AnimatedSprite2D : public Sprite2D {
+    private:
+    int fps;
+    float lastFtime;
+    int row;
+    int rows;
+    int column;
+    int columns;
+    Vec2 frameSize;
+    bool loop;
+    bool paused;
+
+public:
+
+    AnimatedSprite2D(): Sprite2D(){}
+    
+    AnimatedSprite2D(std::string id, Vec2 pos, Vec2 frameSize, int fps = 10): Sprite2D(id, pos.x, pos.y),
+    frameSize(frameSize), row(0), column(0), fps(fps),
+    loop(false), paused(false), columns(0), rows(0), lastFtime(1.0f / fps){
+        if (getTex()->id != 0){
+            columns = getTex()->width / frameSize.x;
+            rows = getTex()->height / frameSize.y;
+        }
+    }
+
+    
+    int getFps() const { return fps; }
+    void setFps(int fps_) { fps = fps_; }
+
+    int getRow() const { return row; }
+    void setRow(int row_) { row = row_; }
+
+    int getRows() const { return rows; }
+    void setRows(int rows_) { rows = rows_; }
+
+    int getColumn() const { return column; }
+    void setColumn(int column_) { column = column_; }
+
+    int getColumns() const { return columns; }
+    void setColumns(int columns_) { columns = columns_; }
+
+    Vec2 getFrameSize() const { return frameSize; }
+    void setFrameSize(const Vec2 &frameSize_) { frameSize = frameSize_; }
+
+    bool doesLoop() const { return loop; }
+    void setLoop(bool loop_) { loop = loop_; }
+
+    // advances column by one and loops back if loop is enabled
+    void advance(){ column = column + 1 < columns ? column + 1 : (loop ? 0 : column); }
+
+    bool getPaused() const { return paused; }
+    void setPaused(bool paused_) { paused = paused_; }
+
+    void pause() { setPaused(true); }
+    void resume() { setPaused(false); }
+    void togglePause() { setPaused(!getPaused()); }
+
+    // Updates the frame.
+    void updateAnimation();
 };

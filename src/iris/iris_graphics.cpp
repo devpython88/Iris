@@ -212,3 +212,17 @@ void TextureService::unloadEverything()
         }
     }
 }
+
+void AnimatedSprite2D::updateAnimation()
+{
+    if (paused) return;
+
+    if (lastFtime > 0.0f){
+        lastFtime -= GetFrameTime();
+        return;
+    }
+
+    lastFtime = 1.0f / fps;
+    advance();
+    setCutout(column * frameSize.x, row * frameSize.y, frameSize.x, frameSize.y);
+}

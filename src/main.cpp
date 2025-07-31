@@ -2,20 +2,16 @@
 #include "iris/iris_input.h"
 #include "iris/iris_audio.h"
 
-Sprite2D sprite;
+AnimatedSprite2D sprite;
 Game game;
-SoundAudio sound;
 
 void init(){
     TextureService::loadTexture("build/apple.png", "apple");
-    sprite = Sprite2D("apple", 20, 20);
+    sprite = AnimatedSprite2D("apple", Vec2(100, 100), Vec2(8, 8), 3);
     sprite.setScale(5.0f, 5.0f);
+    sprite.setLoop(true);
     sprite.setOrigin(sprite.getScaledSize() * ORIGIN_CENTER);
     sprite.setFlip(false, true);
-
-    sound = SoundAudio("build/pickupCoin.wav");
-    sound.setLoop(true);
-    sound.play();
 }
 
 void draw(){
@@ -25,15 +21,10 @@ void draw(){
 void update(float dt){
     sprite.lookAt(Mouse::getPosition());
     sprite.step(100 * dt);
-    sound.update();
-
-    if (Mouse::isButtonHit(MOUSE_BUTTON_LEFT)){
-        sound.setLoop(false);
-    }
+    sprite.updateAnimation();
 }
 
 void unload(){
-    sound.unload();
 }
 
 
