@@ -82,9 +82,15 @@ class Game {
 
         if (unloadFunc) unloadFunc();
 
-        LogService::info("Unloading...");
+        LogService::info("Unloading textures...");
         
         TextureService::unloadEverything();
+
+        LogService::info("Unloading fonts...");
+
+        for (auto pair : TextStyling::getFonts()){
+            if (IsFontValid(pair.second)) UnloadFont(pair.second);
+        }
 
         CloseAudioDevice();
         LogService::info("Closed audio device.");
@@ -132,10 +138,15 @@ class ViewCamera {
 
     Vec2 getTarget() const { return target; }
     void setTarget(const Vec2 &target_) { target = target_; camera.target = target; }
+    void setTarget(float x, float y){ setTarget(Vec2(x, y)); }
 
     Vec2 getOffset() const { return offset; }
     void setOffset(const Vec2 &offset_) { offset = offset_; camera.offset = offset; }
+    void setOffset(float x, float y){ setOffset(Vec2(x, y)); }
 
     void enterCameraMode();
     void exitCameraMode();
+
+    void centerTo(float x, float y);
+    void centerTo(const Vec2& pos);
 };

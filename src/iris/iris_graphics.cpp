@@ -1,5 +1,12 @@
 #include "iris_graphics.h"
 
+
+float TextStyling::spacing = 1.0f;
+float TextStyling::lineSpacing = 0.0f;
+Vec4 TextStyling::padding = Vec4(2, 2, 2, 2);
+std::map<std::string, Font> TextStyling::fonts = std::map<std::string, Font>();
+std::string TextStyling::fontName = "default";
+
 RGBAColor Colors::Red = RGBAColor(255, 0, 0, 255);
 RGBAColor Colors::Yellow = RGBAColor(255, 255, 0, 255);
 RGBAColor Colors::Green = RGBAColor(0, 255, 0, 255);
@@ -84,6 +91,62 @@ void GraphicsRenderer::drawText(float x, float y, std::string text, int size, RG
     DrawText(text.c_str(), x, y, size, color);
 }
 
+void GraphicsRenderer::drawTextStyled(float x, float y, std::string text, int size, RGBAColor color)
+{
+    // Skip padding since no background
+
+    auto font = TextStyling::getFont(TextStyling::getFontName());
+
+    const Font& value = font.has_value() ? font.value() : GetFontDefault();
+
+    DrawTextEx(
+        value,
+        text.c_str(), Vector2{x, y}, size, TextStyling::getSpacing(), color
+    );
+}
+
+// srry i used chatgpt for this one 
+void GraphicsRenderer::drawTextStyledBG(Vec2 pos, std::string text, int size, RGBAColor fg, RGBAColor bg)
+{
+    // Get font
+    auto fontOpt = TextStyling::getFont(TextStyling::getFontName());
+    const Font& font = fontOpt ? fontOpt->get() : GetFontDefault();
+    
+    const Vec4& padding = TextStyling::getPadding();
+
+    // Measure text size
+    Vector2 textSizeR = MeasureTextEx(font, text.c_str(), size, TextStyling::getSpacing());
+    float textWidth = textSizeR.x;
+    float textHeight = textSizeR.y;
+
+    // Calculate background size with padding
+    Vec2 bgSize{
+        textWidth + padding.x + padding.z,
+        textHeight + padding.y + padding.w
+    };
+
+    // Draw background rectangle
+    DrawRectangleRec(Rectangle{pos.x, pos.y, bgSize.x, bgSize.y}, bg);
+
+    // Calculate actual text position inside padded area
+    Vec2 textPos{
+        pos.x + padding.x,
+        pos.y + padding.y
+    };
+
+
+    // Draw the text using proper position
+    DrawTextEx(
+        font,
+        text.c_str(),
+        Vector2{textPos.x, textPos.y},
+        static_cast<float>(size),
+        TextStyling::getSpacing(),
+        fg
+    );
+}
+
+
 void GraphicsRenderer::drawTexture(float x, float y, std::string id, Vec2 scale)
 {
     if (!TextureService::textureExists(id)){
@@ -114,10 +177,10 @@ void GraphicsRenderer::drawSprite(Sprite2D sprite)
     );
 }
 
-void Obj2D::update()
+void Obj2D::update(bool frameIndependent)
 {
-    x += velocity.x;
-    y += velocity.y;
+    x += velocity.x * (frameIndependent ? GetFrameTime() : 1.0f);
+    y += velocity.y * (frameIndependent ? GetFrameTime() : 1.0f);
 }
 
 void Obj2D::lookAt(Vec2 pos)
@@ -225,4 +288,19 @@ void AnimatedSprite2D::updateAnimation()
     lastFtime = 1.0f / fps;
     advance();
     setCutout(column * frameSize.x, row * frameSize.y, frameSize.x, frameSize.y);
+}
+
+void TextStyling::loadFont(std::string id, std::string path)
+{
+    if (fontExists(id)) return;
+
+    Font font = LoadFont(path.c_str());
+    fonts[id] = font;
+}
+
+void TextStyling::unloadFont(std::string id)
+{
+    if (fontExists(id)){
+        if (IsFontValid(fonts[id])) UnloadFont(fonts[id]);
+    }
 }

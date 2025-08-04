@@ -2,7 +2,8 @@
     "files.associations": {
         "compare": "cpp",
         "memory_resource": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "optional": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

@@ -6,10 +6,23 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <optional>
 
 enum class TextureResult {
     LoadFailed,
     LoadSuccess
+};
+
+
+class Obj2D;
+
+class World {
+    public:
+
+    static std::vector<Obj2D*> objects;
+
+    static void update();
+    static void step();
 };
 
 
@@ -97,7 +110,8 @@ class Obj2D {
     Obj2D() = default;
     Obj2D(float x, float y, float width, float height):
     x(x), y(y), width(width), height(height), velocity(0, 0), rotation(0), origin(0, 0),
-    visible(true), canCollide(true){}
+    visible(true), canCollide(true){
+    }
 
     float getX() const { return x - origin.x; }
     float getRawX() const { return x; }
@@ -127,7 +141,7 @@ class Obj2D {
 
 
     // updates position on velocity
-    void update();
+    void update(bool frameIndependent = true);
     
     Vec2 getVelocity() const { return velocity; }
     void setVelocity(const Vec2 &velocity_) { velocity = velocity_; }
@@ -199,6 +213,47 @@ class Rect2D : public Obj2D {
 class TextureService;
 class Sprite2D;
 
+
+
+
+class TextStyling {
+private:
+    static float spacing;
+    static float lineSpacing;
+    static Vec4 padding;
+    static std::map<std::string, Font> fonts;
+    static std::string fontName;
+
+public:
+    
+    static float getSpacing() { return spacing; }
+    static void setSpacing(float spacing_) { spacing = spacing_; }
+
+    static float getLineSpacing() { return lineSpacing; }
+    static void setLineSpacing(float lineSpacing_) { lineSpacing = lineSpacing_; }
+
+    static Vec4 getPadding() { return padding; }
+    static void setPadding(const Vec4 &padding_) { padding = padding_; }
+    static void setPadding(float left, float top, float bottom, float right) { padding = Vec4(left, top, bottom, right); }
+
+    static bool fontExists(std::string id){ return fonts.find(id) != fonts.end(); }
+    static std::optional<std::reference_wrapper<Font>> getFont(std::string id){
+        if (fontExists(id)) return fonts[id];
+        return std::nullopt;
+    }
+
+    static void loadFont(std::string id, std::string path);
+    static void unloadFont(std::string id);
+    
+    static std::map<std::string, Font>& getFonts() { return fonts; }
+
+    static std::string getFontName() { return fontName; }
+    static void setFontName(const std::string &fontName_) { fontName = fontName_; }
+};
+
+
+
+
 class GraphicsRenderer {
     public:
 
@@ -210,6 +265,8 @@ class GraphicsRenderer {
     static void drawLine(Vec2 start, Vec2 end, int thickness, RGBAColor color);
     static void drawPoint(Vec2 pos, RGBAColor color);
     static void drawText(float x, float y, std::string text, int size, RGBAColor color);
+    static void drawTextStyled(float x, float y, std::string text, int size, RGBAColor color);
+    static void drawTextStyledBG(Vec2 pos, std::string text, int size, RGBAColor fg, RGBAColor bg);
     static void drawTexture(float x, float y, std::string id, Vec2 scale = Vec2(1.0f, 1.0f));
     static void drawSprite(Sprite2D sprite);
 };
@@ -363,3 +420,7 @@ public:
     // Updates the frame.
     void updateAnimation();
 };
+
+
+
+

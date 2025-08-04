@@ -2,34 +2,27 @@
 #include "iris/iris_input.h"
 #include "iris/iris_audio.h"
 
-AnimatedSprite2D sprite;
+Rect2D rectangle;
 Game game;
 ViewCamera camera;
 
 void init(){
-    TextureService::loadTexture("build/apple.png", "apple");
-    sprite = AnimatedSprite2D("apple", Vec2(100, 100), Vec2(8, 8), 3);
-    sprite.setScale(5.0f, 5.0f);
-    sprite.setLoop(true);
-    sprite.setOrigin(sprite.getScaledSize() * ORIGIN_CENTER);
-    sprite.setFlip(false, true);
-    
+    rectangle = Rect2D(20, 20, 50, 50, Colors::Red);
+    rectangle.setOrigin(rectangle.getSize() * ORIGIN_CENTER);
+
+    TextStyling::loadFont("arial", "arial.ttf");
+    TextStyling::setFontName("arial");
+    TextStyling::setPadding(10, 10, 10, 10);
 }
 
 void draw(){
-    camera.enterCameraMode();
-    GraphicsRenderer::drawSprite(sprite);
-    camera.exitCameraMode();
+    GraphicsRenderer::drawTextStyledBG(
+        Vec2(10, 10),
+        "Hello", 24, Colors::White, Colors::PastleBlack
+    );
 }
 
 void update(float dt){
-    sprite.lookAt(Mouse::getWorldPosition(camera));
-    sprite.step(100 * dt);
-    sprite.updateAnimation();
-
-    if (Keyboard::isKeyHeld(Keyboard::KeyL)){
-        camera.setTarget(camera.getTarget() + Vec2(10, 0));
-    }
 }
 
 void unload(){
