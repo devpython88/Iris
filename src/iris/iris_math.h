@@ -10,7 +10,7 @@
 #define ORIGIN_CENTERRIGHT  Vec2(1.0f, 0.5f)
 #define ORIGIN_BOTTOMLEFT   Vec2(0.0f, 1.0f)
 #define ORIGIN_BOTTOM       Vec2(0.5f, 1.0f)
-#define ORIGIN_BOTTOMLRIGHT Vec2(1.0f, 1.0f)
+#define ORIGIN_BOTTOMRIGHT Vec2(1.0f, 1.0f)
 
 
 class Vec2 {

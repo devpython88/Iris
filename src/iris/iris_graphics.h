@@ -14,18 +14,6 @@ enum class TextureResult {
 };
 
 
-class Obj2D;
-
-class World {
-    public:
-
-    static std::vector<Obj2D*> objects;
-
-    static void update();
-    static void step();
-};
-
-
 class RGBAColor {
     public:
     uint8_t r, g, b, a;
@@ -113,59 +101,53 @@ class Obj2D {
     visible(true), canCollide(true){
     }
 
-    float getX() const { return x - origin.x; }
-    float getRawX() const { return x; }
-    void setX(float x_) { x = x_; }
-
-    float getY() const { return y - origin.y; }
-    float getRawY() const { return y; }
-    void setY(float y_) { y = y_; }
-
-    float getWidth() const { return width; }
-    void setWidth(float width_) { width = width_; }
-
-    float getHeight() const { return height; }
-    void setHeight(float height_) { height = height_; }
-
-    Vec2 getSize() const { return Vec2(width, height); }
-    Vec2 getPosition() const { return Vec2(x, y); }
-
-    void setSize(float w, float h) { width = w; height = h; }
-    void setPosition(float x_, float y_){ x = x_; y = y_; }
+    virtual float getX() const { return x - origin.x; }
+    virtual float getRawX() const { return x; }
+    virtual void setX(float x_) { x = x_; }
+    virtual float getY() const { return y - origin.y; }
+    virtual float getRawY() const { return y; }
+    virtual void setY(float y_) { y = y_; }
+    virtual float getWidth() const { return width; }
+    virtual void setWidth(float width_) { width = width_; }
+    virtual float getHeight() const { return height; }
+    virtual void setHeight(float height_) { height = height_; }
+    virtual Vec2 getSize() const { return Vec2(width, height); }
+    virtual Vec2 getPosition() const { return Vec2(getX(), getY()); }
+    virtual Vec2 getRawPosition() const { return Vec2(getRawX(), getRawY()); }
+    virtual void setSize(float w, float h) { width = w; height = h; }
+    virtual void setPosition(float x_, float y_){ x = x_; y = y_; }
+    
+    // moves
+    virtual void move(float dx, float dy) { addVelocity(dx, dy); }
 
     // moves
-    void move(float dx, float dy) { addVelocity(dx, dy); }
-
-    // moves
-    void move(Vector2 delta){ move(delta.x, delta.y); }
+    virtual void move(Vector2 delta){ move(delta.x, delta.y); }
 
 
     // updates position on velocity
-    void update(bool frameIndependent = true);
+    virtual void update(bool frameIndependent = true);
     
-    Vec2 getVelocity() const { return velocity; }
-    void setVelocity(const Vec2 &velocity_) { velocity = velocity_; }
+    virtual Vec2 getVelocity() const { return velocity; }
+    virtual void setVelocity(const Vec2 &velocity_) { velocity = velocity_; }
 
     // adds to the velocity
-    void addVelocity(float dx, float dy){ velocity = velocity + Vec2(dx, dy); }
+    virtual void addVelocity(float dx, float dy){ velocity = velocity + Vec2(dx, dy); }
 
-    float getRotation() const { return rotation; }
-    void setRotation(float rotation_) { rotation = rotation_; }
+    virtual float getRotation() const { return rotation; }
+    virtual void setRotation(float rotation_) { rotation = rotation_; }
 
     // adds to the rotation
-    void addRotation(float val) { rotation += val; }
+    virtual void addRotation(float val) { rotation += val; }
 
-    Vec2 getOrigin() const { return origin; }
-    void setOrigin(const Vec2 &origin_) { origin = origin_; }
-
-    // looks at something
-    void lookAt(Vec2 pos);
+    virtual Vec2 getOrigin() const { return origin; }
+    virtual void setOrigin(const Vec2 &origin_) { origin = origin_; }
 
     // looks at something
-    void lookAt(float x, float y);
-
+    virtual void lookAt(Vec2 pos);
+    // looks at something
+    virtual void lookAt(float x, float y);
     // Steps forward relative to the rotation
-    void step(float amount);
+    virtual void step(float amount);
 
     // Checks intersection between two bounding boxes
     static bool checkIntersection(Obj2D a, Obj2D b);
@@ -177,13 +159,13 @@ class Obj2D {
     static bool checkIntersectionCircles(Vec3 a, Vec3 b);
 
     // Returns a raylib rectangle, mainly used in library
-    Rectangle raylibRec(){ return Rectangle{x, y, width, height}; }
+    virtual Rectangle raylibRec(){ return Rectangle{x, y, width, height}; }
 
-    bool getCanCollide() const { return canCollide; }
-    void setCanCollide(bool canCollide_) { canCollide = canCollide_; }
+    virtual bool getCanCollide() const { return canCollide; }
+    virtual void setCanCollide(bool canCollide_) { canCollide = canCollide_; }
 
-    bool getVisible() const { return visible; }
-    void setVisible(bool visible_) { visible = visible_; }
+    virtual bool getVisible() const { return visible; }
+    virtual void setVisible(bool visible_) { visible = visible_; }
 };
 
 
@@ -347,6 +329,10 @@ class Sprite2D : public Obj2D {
     Obj2D getRect() const { return Obj2D(x, y,
         width * scale.x,
         height * scale.y); }
+    
+    Obj2D getScaledRect() const {
+        return Obj2D(x, y, cutout.getWidth() * scale.x, cutout.getHeight() * scale.y);
+    }
 
     Texture* getTex() const { return tex; }
 
