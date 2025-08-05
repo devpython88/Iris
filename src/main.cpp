@@ -2,13 +2,10 @@
 #include "iris/iris_input.h"
 #include "iris/iris_audio.h"
 
-Rect2D rectangle;
 Game game;
-ViewCamera camera;
 
 void init(){
-    rectangle = Rect2D(20, 20, 50, 50, Colors::Red);
-    rectangle.setOrigin(rectangle.getSize() * ORIGIN_CENTER);
+    
 }
 
 void draw(){
@@ -16,6 +13,7 @@ void draw(){
 }
 
 void update(float dt){
+
 }
 
 void unload(){
