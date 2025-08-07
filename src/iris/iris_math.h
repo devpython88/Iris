@@ -171,5 +171,9 @@ class MathUtils {
     public:
 
     static bool isZero(float v);
-    static float getDistance(Vec2 a, Vec2 b);
+    static float getManhattanDistance(Vec2 a, Vec2 b);
+    static float getEuclideanDistance(Vec2 a, Vec2 b);
+
+    static float getManhattanDistance(float x1, float y1, float x2, float y2);
+    static float getEuclideanDistance(float x1, float y1, float x2, float y2);
 };

@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <optional>
+#include <fstream>
 
 enum class TextureResult {
     LoadFailed,
@@ -97,10 +98,10 @@ class Obj2D {
 
     Obj2D() = default;
     Obj2D(float x, float y, float width, float height):
-    x(x), y(y), width(width), height(height), velocity(0, 0), rotation(0), origin(0, 0),
+    x(x), y(y), width(width), height(height), rotation(0), origin(0, 0), velocity(0.0f, 0.0f),
     visible(true), canCollide(true){
     }
-
+    
     virtual float getX() const { return x - origin.x; }
     virtual float getRawX() const { return x; }
     virtual void setX(float x_) { x = x_; }
@@ -160,6 +161,10 @@ class Obj2D {
 
     // Returns a raylib rectangle, mainly used in library
     virtual Rectangle raylibRec(){ return Rectangle{x, y, width, height}; }
+
+    // Overrides velocity to move towards something
+    virtual void moveTowards(float tx, float ty, float speed);
+    virtual void moveTowards(Vec2 target, float speed);
 
     virtual bool getCanCollide() const { return canCollide; }
     virtual void setCanCollide(bool canCollide_) { canCollide = canCollide_; }
@@ -346,6 +351,13 @@ class Sprite2D : public Obj2D {
 
 
 
+typedef struct RowCol {
+    int row;
+    int col;
+} RowCol;
+
+
+
 class AnimatedSprite2D : public Sprite2D {
     private:
     int fps;
@@ -358,13 +370,16 @@ class AnimatedSprite2D : public Sprite2D {
     bool loop;
     bool paused;
 
+    std::map<std::string, RowCol> animations;
+
 public:
 
     AnimatedSprite2D(): Sprite2D(){}
 
     AnimatedSprite2D(std::string id, Vec2 pos, Vec2 frameSize, int fps = 10): Sprite2D(id, pos.x, pos.y),
     frameSize(frameSize), row(0), column(0), fps(fps),
-    loop(false), paused(false), columns(0), rows(0), lastFtime(1.0f / fps){
+    loop(false), paused(false), columns(0), rows(0), lastFtime(1.0f / fps),
+    animations(){
         if (getTex()->id != 0){
             columns = getTex()->width / frameSize.x;
             rows = getTex()->height / frameSize.y;
@@ -405,8 +420,18 @@ public:
 
     // Updates the frame.
     void updateAnimation();
+
+    std::map<std::string, RowCol> getAnimations() const { return animations; }
+
+    // Adds a row and col identified with a identifier, effectively adding a animation
+    void addAnimation(const std::string& identifier, int row_, int col_);
+
+    // Removes animation
+    void removeAnimation(const std::string& identifier);
+
+    // Checks if animation exists
+    bool hasAnimation(const std::string& identifier);
+
+    // Selects animation
+    void selectAnimation(const std::string& identifier);
 };
-
-
-
-

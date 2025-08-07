@@ -19,3 +19,7 @@ It has six extra fields: `rows`, `columns`, `row`, `column`, `fps` and `loop`
 You can update the animation with `updateAnimation`
 And handle pausing with `setPause`, `pause()`, `resume()` and `isPaused()`
 And finally handle looping with `setLoop` and `doesLoop`
+
+## Drawing
+
+You can draw both `Sprite2D`s and `AnimatedSprite2D`s with `GraphicsRenderer::drawSprite`

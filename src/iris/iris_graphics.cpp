@@ -179,8 +179,10 @@ void GraphicsRenderer::drawSprite(Sprite2D sprite)
 
 void Obj2D::update(bool frameIndependent)
 {
-    x += velocity.x * (frameIndependent ? GetFrameTime() : 1.0f);
-    y += velocity.y * (frameIndependent ? GetFrameTime() : 1.0f);
+    float mul = (frameIndependent ? GetFrameTime() : 1.0f);
+    x += velocity.x * mul;
+    y += velocity.y * mul;
+
 }
 
 void Obj2D::lookAt(Vec2 pos)
@@ -201,8 +203,8 @@ void Obj2D::step(float amount)
     float dx = cos(rotation * DEG2RAD) * amount;
     float dy = sin(rotation * DEG2RAD) * amount;
 
-    x += dx;
-    y += dy;
+    velocity.x = dx;
+    velocity.y = dy;
 }
 
 bool Obj2D::checkIntersection(Obj2D a, Obj2D b)
@@ -224,6 +226,24 @@ bool Obj2D::checkIntersectionCircle(Obj2D a, Vec2 center, float radius)
 bool Obj2D::checkIntersectionCircles(Vec3 a, Vec3 b)
 {
     return CheckCollisionCircles(Vector2{a.x, a.y}, a.z, Vector2{b.x, b.y}, b.z);
+}
+
+void Obj2D::moveTowards(float tx, float ty, float speed)
+{
+    float mx = 0.0f, my = 0.0f;
+
+    if (x <= tx) mx = speed;
+    if (x >= tx) mx = -speed;
+    if (y <= ty) my = speed;
+    if (y >= ty) my = -speed;
+
+    if (!MathUtils::isZero(mx)) velocity.x = mx;
+    if (!MathUtils::isZero(my)) velocity.y = my;
+}
+
+void Obj2D::moveTowards(Vec2 target, float speed)
+{
+    moveTowards(target.x, target.y, speed);
 }
 
 std::map<std::string, Texture> TextureService::textures = std::map<std::string, Texture>();
@@ -288,6 +308,36 @@ void AnimatedSprite2D::updateAnimation()
     lastFtime = 1.0f / fps;
     advance();
     setCutout(column * frameSize.x, row * frameSize.y, frameSize.x, frameSize.y);
+}
+
+void AnimatedSprite2D::addAnimation(const std::string &identifier, int row_, int col_)
+{
+    if (!hasAnimation(identifier)){
+        RowCol rowcol{row_, col_};
+        animations[identifier] = rowcol;
+    }
+}
+
+void AnimatedSprite2D::removeAnimation(const std::string &identifier)
+{
+    if (hasAnimation(identifier)){
+        animations.erase(identifier);
+    }
+}
+
+bool AnimatedSprite2D::hasAnimation(const std::string &identifier)
+{
+    return animations.find(identifier) != animations.end();
+}
+
+void AnimatedSprite2D::selectAnimation(const std::string & identifier)
+{
+    if (hasAnimation(identifier)){
+        auto anim = animations[identifier];
+
+        row = anim.row;
+        column = anim.col;
+    }
 }
 
 void TextStyling::loadFont(std::string id, std::string path)

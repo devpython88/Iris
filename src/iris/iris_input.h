@@ -153,7 +153,6 @@ class Mouse {
     static Vec2 getWorldPosition(ViewCamera camera);
     static Vec2 getScrollVec();
     static float getScroll();
-
     static bool isButtonHit(int btn);
     static bool isButtonHeld(int btn);
     static bool isButtonReleased(int btn);
