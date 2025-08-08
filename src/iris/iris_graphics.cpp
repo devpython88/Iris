@@ -56,6 +56,19 @@ void GraphicsRenderer::drawRectangle(Rect2D rect)
     DrawRectanglePro(rect.raylibRec(), rect.getOrigin(), rect.getRotation(), rect.getColor());
 }
 
+void GraphicsRenderer::drawRectangle(float x, float y, float w, float h, RGBAColor color)
+{
+    DrawRectangle(x, y, w, h, color);
+}
+
+void GraphicsRenderer::drawRectangle(Vec2 pos, Vec2 size, RGBAColor color, float rotation, Vec2 origin)
+{
+    DrawRectanglePro(
+        Rectangle{pos.x, pos.y, size.x, size.y},
+        origin, rotation, color
+    );
+}
+
 void GraphicsRenderer::drawCircle(Vec2 center, float radius, RGBAColor color)
 {
     DrawCircleV(center, radius, color);

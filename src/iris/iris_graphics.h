@@ -248,6 +248,8 @@ class GraphicsRenderer {
     public:
 
     static void drawRectangle(Rect2D rect);
+    static void drawRectangle(float x, float y, float w, float h, RGBAColor color);
+    static void drawRectangle(Vec2 pos, Vec2 size, RGBAColor color, float rotation, Vec2 origin = Vec2(0, 0));
     static void drawCircle(Vec2 center, float radius, RGBAColor color);
     static void drawEllipse(Vec2 center, Vec2 size, RGBAColor color);
     static void drawCircleLines(Vec2 center, float radius, RGBAColor color);
