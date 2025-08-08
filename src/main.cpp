@@ -22,8 +22,8 @@ void init(){
 }
 
 void draw(){
-	// draws the sprite
-    GraphicsRenderer::drawSprite(sprite);
+	// draw non existent texture to test the checkerboard pattern
+    GraphicsRenderer::drawTexture(20, 20, "hehehe");
 }
 
 void update(float dt){

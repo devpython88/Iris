@@ -150,7 +150,10 @@ void GraphicsRenderer::drawTextStyledBG(Vec2 pos, std::string text, int size, RG
 void GraphicsRenderer::drawTexture(float x, float y, std::string id, Vec2 scale)
 {
     if (!TextureService::textureExists(id)){
-        DrawRectangle(x, y, 20, 20, RED);
+        DrawRectangle(x, y, 30, 30, PURPLE);
+        DrawRectangle(x + 30, y, 30, 30, BLACK);
+        DrawRectangle(x + 30, y + 30, 30, 30, PURPLE);
+        DrawRectangle(x, y + 30, 30, 30, BLACK);
         return;
     }
 
