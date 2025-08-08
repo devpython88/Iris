@@ -4,7 +4,7 @@
 float TextStyling::spacing = 1.0f;
 float TextStyling::lineSpacing = 0.0f;
 Vec4 TextStyling::padding = Vec4(2, 2, 2, 2);
-std::map<std::string, Font> TextStyling::fonts = std::map<std::string, Font>();
+std::unordered_map<std::string, Font> TextStyling::fonts = std::unordered_map<std::string, Font>();
 std::string TextStyling::fontName = "default";
 
 RGBAColor Colors::Red = RGBAColor(255, 0, 0, 255);
@@ -246,7 +246,7 @@ void Obj2D::moveTowards(Vec2 target, float speed)
     moveTowards(target.x, target.y, speed);
 }
 
-std::map<std::string, Texture> TextureService::textures = std::map<std::string, Texture>();
+std::unordered_map<std::string, Texture> TextureService::textures = std::unordered_map<std::string, Texture>();
 
 
 TextureResult TextureService::loadTexture(std::string path, std::string id)
@@ -353,4 +353,18 @@ void TextStyling::unloadFont(std::string id)
     if (fontExists(id)){
         if (IsFontValid(fonts[id])) UnloadFont(fonts[id]);
     }
+}
+
+void RGBAColor::brighten(float value)
+{
+    r = r + value > 255 ? 255 : r + value;
+    g = g + value > 255 ? 255 : g + value;
+    b = b + value > 255 ? 255 : b + value;
+}
+
+void RGBAColor::darken(float value)
+{
+    r = r - value > 0 ? 0 : r - value;
+    g = g - value > 0 ? 0 : g - value;
+    b = b - value > 0 ? 0 : b - value;
 }

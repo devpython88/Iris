@@ -3,7 +3,7 @@
 #include "iris_math.h"
 #include "iris_logging.h"
 #include <inttypes.h>
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <string>
 #include <optional>
@@ -26,6 +26,9 @@ class RGBAColor {
     operator Color(){
         return Color{r, g, b, a};
     }
+
+    void brighten(float value);
+    void darken(float value);
 };
 
 class Colors {
@@ -208,7 +211,7 @@ private:
     static float spacing;
     static float lineSpacing;
     static Vec4 padding;
-    static std::map<std::string, Font> fonts;
+    static std::unordered_map<std::string, Font> fonts;
     static std::string fontName;
 
 public:
@@ -232,7 +235,7 @@ public:
     static void loadFont(std::string id, std::string path);
     static void unloadFont(std::string id);
     
-    static std::map<std::string, Font>& getFonts() { return fonts; }
+    static std::unordered_map<std::string, Font>& getFonts() { return fonts; }
 
     static std::string getFontName() { return fontName; }
     static void setFontName(const std::string &fontName_) { fontName = fontName_; }
@@ -265,7 +268,7 @@ class GraphicsRenderer {
 
 class TextureService {
     private:
-    static std::map<std::string, Texture> textures;
+    static std::unordered_map<std::string, Texture> textures;
 
     public:
 
@@ -276,7 +279,7 @@ class TextureService {
     static Texture* getRTexture(std::string id);
     static void unloadEverything();
      
-    static std::map<std::string, Texture> getTextures() { return textures; }
+    static std::unordered_map<std::string, Texture> getTextures() { return textures; }
 };
 
 
@@ -370,7 +373,7 @@ class AnimatedSprite2D : public Sprite2D {
     bool loop;
     bool paused;
 
-    std::map<std::string, RowCol> animations;
+    std::unordered_map<std::string, RowCol> animations;
 
 public:
 
@@ -421,7 +424,7 @@ public:
     // Updates the frame.
     void updateAnimation();
 
-    std::map<std::string, RowCol> getAnimations() const { return animations; }
+    std::unordered_map<std::string, RowCol> getAnimations() const { return animations; }
 
     // Adds a row and col identified with a identifier, effectively adding a animation
     void addAnimation(const std::string& identifier, int row_, int col_);
