@@ -1,20 +1,20 @@
 #include "iris/iris_window.h"
 #include "iris/iris_input.h"
-#include "iris/iris_audio.h"
+#include "iris/iris_fs.h"
 
 Game game;
-Rect2D rec1;
 
 void init(){
-    rec1 = Rect2D(20, 20, 50, 50, Colors::Red);
+    FileSystem::createDirectory("Hello");
 }
 
 void draw(){
-    GraphicsRenderer::drawRectangle(rec1);
 }
 
 void update(float dt){
-	rec1.resizeEx(0, 10 * dt, 0, 20 * dt);
+    if (Keyboard::isKeyHit(Keyboard::KeyA)){
+        FileSystem::removeDirectory("Hello");
+    }
 }
 
 void unload(){

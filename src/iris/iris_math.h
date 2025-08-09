@@ -177,3 +177,15 @@ class MathUtils {
     static float getManhattanDistance(float x1, float y1, float x2, float y2);
     static float getEuclideanDistance(float x1, float y1, float x2, float y2);
 };
+
+
+
+typedef Vec2 Direction;
+
+class Directions {
+    public:
+    static const Direction DirectionUp;
+    static const Direction DirectionDown;
+    static const Direction DirectionLeft;
+    static const Direction DirectionRight;
+};

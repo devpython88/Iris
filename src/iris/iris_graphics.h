@@ -445,3 +445,14 @@ public:
     // Selects animation
     void selectAnimation(const std::string& identifier);
 };
+
+
+
+typedef struct Particle {
+    float x, y;
+    Vec2 scale;
+    std::string texture;
+
+    explicit Particle(float x, float y, const std::string& texture, Vec2 scale):
+        x(x), y(y), scale(scale), texture(texture){}
+} Particle;

@@ -1,5 +1,10 @@
 #include "iris_math.h"
 
+const Direction Directions::DirectionUp = Vec2(0, -1);
+const Direction Directions::DirectionDown = Vec2(0, 1);
+const Direction Directions::DirectionLeft = Vec2(-1, 0);
+const Direction Directions::DirectionRight = Vec2(1, 0);
+
 bool MathUtils::isZero(float v)
 {
     return fabsf(v) < 1e-6f;
