@@ -3,15 +3,18 @@
 #include "iris/iris_audio.h"
 
 Game game;
+Rect2D rec1;
 
 void init(){
+    rec1 = Rect2D(20, 20, 50, 50, Colors::Red);
 }
 
 void draw(){
+    GraphicsRenderer::drawRectangle(rec1);
 }
 
 void update(float dt){
-	
+	rec1.resizeEx(0, 10 * dt, 0, 20 * dt);
 }
 
 void unload(){

@@ -262,6 +262,26 @@ void Obj2D::moveTowards(Vec2 target, float speed)
     moveTowards(target.x, target.y, speed);
 }
 
+void Obj2D::resizeEx(float widthLeft, float widthRight, float heightUp, float heightDown)
+{
+    width += widthLeft;
+    x -= widthLeft;   // shift left
+
+    width += widthRight;
+    // no x shift for right expansion
+
+    height += heightUp;
+    y -= heightUp;    // shift up
+
+    height += heightDown;
+    // no y shift for downward expansion
+}
+
+void Obj2D::resizeEx(Vec2 width, Vec2 height)
+{
+    resizeEx(width.x, width.y, height.x, height.y);
+}
+
 std::unordered_map<std::string, Texture> TextureService::textures = std::unordered_map<std::string, Texture>();
 
 

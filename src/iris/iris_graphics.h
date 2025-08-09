@@ -133,6 +133,7 @@ class Obj2D {
     
     virtual Vec2 getVelocity() const { return velocity; }
     virtual void setVelocity(const Vec2 &velocity_) { velocity = velocity_; }
+    virtual void setVelocity(float x, float y) { setVelocity(Vec2(x, y)); }
 
     // adds to the velocity
     virtual void addVelocity(float dx, float dy){ velocity = velocity + Vec2(dx, dy); }
@@ -174,6 +175,10 @@ class Obj2D {
 
     virtual bool getVisible() const { return visible; }
     virtual void setVisible(bool visible_) { visible = visible_; }
+
+    // Modifies the width and height of the object in seperate directions
+    virtual void resizeEx(float widthLeft, float widthRight, float heightUp, float heightDown);
+    virtual void resizeEx(Vec2 width, Vec2 height);
 };
 
 

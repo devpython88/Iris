@@ -23,3 +23,10 @@ And finally handle looping with `setLoop` and `doesLoop`
 ## Drawing
 
 You can draw both `Sprite2D`s and `AnimatedSprite2D`s with `GraphicsRenderer::drawSprite`
+
+## Mapped animations
+
+In `AnimatedSprite2D` you can use `addAnimation(std::string id, int row, int col)` to add a animation by identifier
+
+Then use `selectAnimation(std::string id)` to move to it.
+You can also `removeAnimation(std::string id)` and `hasAnimation(std::string id)`.

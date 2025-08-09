@@ -22,6 +22,14 @@ Aswell as some other functions:
 
 `step(float)`: Moves the object by `steps` in the direction the angle is facing
 
+There is also a really handy resize function:
+
+`resizeEx(float wLeft, float wRight, float hUp, float hDown)`
+
+This function will add values to the size, But all the width and height are in different axis, So basically you can make it so it expands to the left or something else instead of adding the width and height to both sides
+
+There is also its Vec2 counterpart `resizeEx(Vec2 w, Vec2 h)`.
+
 > Sidenote: getX and getY return x and y relative to their center, getRawX and getRawY dont. same goes for getRawPosition
 
 
